@@ -1,49 +1,60 @@
-<<<<<<< HEAD
-# ScientificCalculator
-This software simulates a scentific calculator on a website with all useful function for both everyday life and complex mathematical tasks.
-=======
-# 🚀 User Guide: Scientific Calculator (C++ Edition)
+# 🚀 Scientific Calculator: Dual-Language Edition
 
-This guide will walk you through setting up and running the **Scientific Calculator** directly from your Command Prompt (CMD).
+This repository features a professional-grade **Scientific Calculator** developed for terminal use. It is available in two versions: a high-performance **C++ implementation** and a versatile **Python script**.
 
 ---
 
-## 🛠️ Phase 1: Setting up the Compiler
+# 🛠️ Setup & Requirements
 
-Since C++ is a compiled language, your computer needs a "translator" (compiler) to turn the code into an application.
+### For C++ (Compiled Version)
+Since C++ is a compiled language, you need a "translator" (compiler) to turn the code into an application.
 
 * **Download the Toolchain** — Go to [MSYS2.org](https://www.msys2.org/) and download the installer.
-* **Installation** — Run the setup. When the terminal pops up, type the following command:
+* **Installation** — Run the setup and type:
     ```bash
     pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain
     ```
-* **Environment Variables** — Search for "Edit the system environment variables" in Windows. 
-    * Click **Environment Variables** > Select **Path** > **Edit** > **New**.
-    * Paste: `C:\msys64\ucrt64\bin`
-    * Restart your CMD.
+* **Environment Variables** — Add `C:\msys64\ucrt64\bin` to your System **Path**.
+
+### For Python (Scripted Version)
+Python is an interpreted language, so you only need the Python runtime.
+
+* **Download** — Get the latest version from [Python.org](https://www.python.org/).
+* **Verification** — Open CMD and type `python --version` to ensure it's installed.
 
 ---
 
-## 📦 Phase 2: Compiling the Program
+# 📦 How to Run
 
-Once the compiler is ready, follow these steps to build your app:
-
-1.  **Place the File** — Save your code as `main.cpp` in a folder (e.g., `Desktop\CalcProject`).
-2.  **Open CMD** — Press `Win + R`, type `cmd`, and hit Enter.
-3.  **Navigate** — Enter your project folder:
+## Option A: C++ (Command Prompt)
+1. **Navigate** to your project folder:
     ```cmd
     cd Desktop\CalcProject
     ```
-4.  **Build the App** — Run this command:
+2. **Build the App**:
     ```cmd
     g++ main.cpp -o ScientificCalc
+    ```
+3. **Run**:
+    ```cmd
+    ScientificCalc
+    ```
+
+## Option B: Python (Command Prompt)
+1. **Navigate** to your project folder:
+    ```cmd
+    cd Desktop\CalcProject
+    ```
+2. **Run Directly**:
+    ```cmd
+    python calculator.py
     ```
 
 ---
 
-## ⌨️ Interaction Guide
+# ⌨️ Interaction Guide
 
-The calculator uses a **Command-First** logic. Type the command, hit Enter, then provide the numbers.
+Both versions use a **Command-First** logic. Type the command, hit Enter, then provide the numbers when prompted.
 
 | Command | Action | Example |
 | :--- | :--- | :--- |
@@ -57,9 +68,9 @@ The calculator uses a **Command-First** logic. Type the command, hit Enter, then
 
 ---
 
-## ⚠️ Pro Tips
+# ⚠️ Pro Tips
 
-* **Case Sensitivity** — You can type `SIN`, `sin`, or `Sin` and it will work perfectly.
-* **Precision** — Results are shown with **6 decimal places** for scientific accuracy.
-* **Safety** — Built-in "Division by Zero" protection to prevent system crashes.
->>>>>>> 3e9c611bbbb08aea70eb1a16b2834f63606fa6ae
+* **Case Sensitivity** — Both versions are user-friendly; `SIN`, `sin`, or `Sin` will all work.
+* **Precision** — Results are calculated with high precision and displayed with **6 decimal places**.
+* **Language Choice** — Use the **C++ version** for maximum execution speed or the **Python version** for easier code readability and cross-platform portability.
+* **Safety** — Includes built-in protection against "Division by Zero" and invalid mathematical inputs.
