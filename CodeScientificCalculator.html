@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen Scientific Station - Pro Edition</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --calc-bg: #1e293b;
+            --btn-num: #334155;
+            --btn-op: #0ea5e9;
+            --btn-fn: #4f46e5;
+            --btn-spec: #be123c;
+            --accent: #10b981;
+            --text: #f8fafc;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .calculator {
+            background: var(--calc-bg);
+            padding: 30px;
+            border-radius: 28px;
+            width: 940px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .screen {
+            background: #0b1120;
+            padding: 20px 30px;
+            border-radius: 16px;
+            text-align: right;
+            margin-bottom: 25px;
+            border: 2px solid rgba(255,255,255,0.1);
+            transition: all 0.2s;
+        }
+
+        .flash { border-color: var(--accent); box-shadow: 0 0 15px var(--accent); }
+
+        .indicators {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        #display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            overflow: hidden;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 4.2rem;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1.6fr 0.7fr 1.2fr;
+            gap: 20px;
+        }
+
+        .grid-section { display: grid; gap: 10px; align-content: start; }
+
+        .scientific-grid { grid-template-columns: repeat(4, 1fr); }
+        .operators-grid { grid-template-columns: repeat(2, 1fr); }
+        .numbers-grid { grid-template-columns: repeat(3, 1fr); }
+
+        button {
+            border: none;
+            padding: 15px 5px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            color: white;
+            outline: none;
+        }
+
+        button:hover { filter: brightness(1.2); transform: scale(1.02); }
+        button:active { transform: scale(0.95); opacity: 0.8; }
+
+        .num { background: var(--btn-num); font-size: 1.3rem; }
+        .op { background: var(--btn-op); }
+        .fn { background: var(--btn-fn); font-size: 0.85rem; }
+        .spec { background: var(--btn-spec); }
+        .mode-btn { background: var(--accent); color: var(--bg); font-size: 0.75rem; }
+        .conv-btn { background: #f59e0b; color: var(--bg); font-size: 0.75rem; }
+        .equals { background: var(--accent); color: var(--bg); font-size: 1.8rem; grid-column: span 3; margin-top: 5px; }
+        
+        .hex-btn { background: #475569; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <div class="screen" id="screen-box">
+        <div class="indicators">
+            <span id="angle-mode">MODE: DEG</span>
+            <span id="base-mode">BASE: DEC</span>
+        </div>
+        <div id="display">0</div>
+    </div>
+
+    <div class="main-layout">
+        <div class="grid-section scientific-grid">
+            <button class="mode-btn" onclick="toggleAngle()" title="Switch Input Mode">MODE: DEG/RAD</button>
+            <button class="conv-btn" onclick="execFn('convertAngle')" id="conv-label">➔ RAD</button>
+            <button class="mode-btn" onclick="toggleBase()">BASE</button>
+            <button class="fn" onclick="execFn('pi')">π</button>
+            
+            <button class="fn" onclick="execFn('sin')">sin</button>
+            <button class="fn" onclick="execFn('asin')">asin</button>
+            <button class="fn" onclick="execFn('cos')">cos</button>
+            <button class="fn" onclick="execFn('acos')">acos</button>
+            
+            <button class="fn" onclick="execFn('tan')">tan</button>
+            <button class="fn" onclick="execFn('atan')">atan</button>
+            <button class="fn" onclick="execFn('cot')">cot</button>
+            <button class="fn" onclick="execFn('acot')">acot</button>
+            
+            <button class="fn" onclick="execFn('sec')">sec</button>
+            <button class="fn" onclick="execFn('asec')">asec</button>
+            <button class="fn" onclick="execFn('csc')">csc</button>
+            <button class="fn" onclick="execFn('acsc')">acsc</button>
+            
+            <button class="fn" onclick="execFn('log')">ln</button>
+            <button class="fn" onclick="execFn('log10')">log10</button>
+            <button class="fn" onclick="execFn('sqrt')">√</button>
+            <button class="fn" onclick="setOp('root_n')">ⁿ√x</button>
+            
+            <button class="fn" onclick="execFn('square')">x²</button>
+            <button class="fn" onclick="setOp('pow')">x^y</button>
+            <button class="fn" onclick="execFn('percent')">%</button>
+            <button class="fn" onclick="execFn('inv')">1/x</button>
+        </div>
+
+        <div class="grid-section operators-grid">
+            <button class="spec" onclick="clearAll()">AC</button>
+            <button class="spec" onclick="backspace()">DEL</button>
+            <button class="op" onclick="setOp('/')">÷</button>
+            <button class="op" onclick="setOp('*')">×</button>
+            <button class="op" onclick="setOp('-')">−</button>
+            <button class="op" onclick="setOp('+')">+</button>
+            <button class="num hex-btn" onclick="press('A')">A</button>
+            <button class="num hex-btn" onclick="press('B')">B</button>
+            <button class="num hex-btn" onclick="press('C')">C</button>
+            <button class="num hex-btn" onclick="press('D')">D</button>
+            <button class="num hex-btn" onclick="press('E')">E</button>
+            <button class="num hex-btn" onclick="press('F')">F</button>
+        </div>
+
+        <div class="grid-section numbers-grid">
+            <button class="num" onclick="press('7')">7</button>
+            <button class="num" onclick="press('8')">8</button>
+            <button class="num" onclick="press('9')">9</button>
+            <button class="num" onclick="press('4')">4</button>
+            <button class="num" onclick="press('5')">5</button>
+            <button class="num" onclick="press('6')">6</button>
+            <button class="num" onclick="press('1')">1</button>
+            <button class="num" onclick="press('2')">2</button>
+            <button class="num" onclick="press('3')">3</button>
+            <button class="num" onclick="execFn('negate')">+/-</button>
+            <button class="num" onclick="press('0')">0</button>
+            <button class="num" onclick="press('.')">.</button>
+            <button class="equals" onclick="calculate()">=</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentInput = "0";
+    let firstValue = null;
+    let currentOp = null;
+    let shouldReset = false;
+    let angleMode = "DEG";
+    let baseMode = "DEC";
+
+    const display = document.getElementById('display');
+    const screenBox = document.getElementById('screen-box');
+    const angleInd = document.getElementById('angle-mode');
+    const baseInd = document.getElementById('base-mode');
+    const convLabel = document.getElementById('conv-label');
+
+    // KEYBOARD SUPPORT
+    document.addEventListener('keydown', (e) => {
+        if (e.key >= '0' && e.key <= '9') press(e.key);
+        if (e.key === '.') press('.');
+        if (['+', '-', '*', '/'].includes(e.key)) setOp(e.key);
+        if (e.key === 'Enter' || e.key === '=') calculate();
+        if (e.key === 'Backspace') backspace();
+        if (e.key === 'Escape') clearAll();
+        if (e.key.toLowerCase() === 'r') toggleAngle();
+    });
+
+    function toggleAngle() {
+        angleMode = (angleMode === "DEG") ? "RAD" : "DEG";
+        angleInd.innerText = "MODE: " + angleMode;
+        convLabel.innerText = (angleMode === "DEG") ? "➔ RAD" : "➔ DEG";
+    }
+
+    const baseValues = { DEC: 10, BIN: 2, HEX: 16, OCT: 8 };
+    const bases = ["DEC", "BIN", "HEX", "OCT"];
+
+    function toggleBase() {
+        let oldBase = baseValues[baseMode];
+        let currentIndex = bases.indexOf(baseMode);
+        baseMode = bases[(currentIndex + 1) % bases.length];
+        try {
+            let decimalValue = parseInt(currentInput, oldBase);
+            if (!isNaN(decimalValue)) currentInput = decimalValue.toString(baseValues[baseMode]).toUpperCase();
+        } catch(e) { currentInput = "0"; }
+        baseInd.innerText = "BASE: " + baseMode;
+        updateHexButtons();
+        updateDisplay();
+    }
+
+    function updateHexButtons() {
+        document.querySelectorAll('.hex-btn').forEach(btn => btn.style.display = (baseMode === "HEX") ? "block" : "none");
+    }
+
+    function press(val) {
+        if (currentInput === "0" || shouldReset) { currentInput = val; shouldReset = false; }
+        else { currentInput += val; }
+        updateDisplay();
+    }
+
+    function updateDisplay() { display.innerText = currentInput; }
+    function clearAll() { currentInput = "0"; firstValue = null; currentOp = null; updateDisplay(); }
+    function backspace() { currentInput = currentInput.slice(0, -1) || "0"; updateDisplay(); }
+
+    function setOp(op) {
+        firstValue = (baseMode === "DEC") ? parseFloat(currentInput) : parseInt(currentInput, baseValues[baseMode]);
+        currentOp = op;
+        shouldReset = true;
+    }
+
+    function calculate() {
+        if (currentOp === null) return;
+        let secondValue = (baseMode === "DEC") ? parseFloat(currentInput) : parseInt(currentInput, baseValues[baseMode]);
+        let result = 0;
+        switch(currentOp) {
+            case '+': result = firstValue + secondValue; break;
+            case '-': result = firstValue - secondValue; break;
+            case '*': result = firstValue * secondValue; break;
+            case '/': result = firstValue / secondValue; break;
+            case 'pow': result = Math.pow(firstValue, secondValue); break;
+            case 'root_n': result = Math.pow(firstValue, 1/secondValue); break;
+        }
+        currentInput = (baseMode === "DEC") ? (Math.round(result * 10000000) / 10000000).toString() : Math.floor(result).toString(baseValues[baseMode]).toUpperCase();
+        currentOp = null;
+        screenBox.classList.add('flash');
+        setTimeout(() => screenBox.classList.remove('flash'), 200);
+        updateDisplay();
+    }
+
+    function execFn(fn) {
+        let val = (baseMode === "DEC") ? parseFloat(currentInput) : parseInt(currentInput, baseValues[baseMode]);
+        let rad = (angleMode === "DEG") ? val * (Math.PI / 180) : val;
+
+        switch(fn) {
+            case 'convertAngle': 
+                val = (angleMode === "DEG") ? val * (Math.PI / 180) : val * (180 / Math.PI);
+                break;
+            case 'sin': val = Math.sin(rad); break;
+            case 'cos': val = Math.cos(rad); break;
+            case 'tan': val = Math.tan(rad); break;
+            case 'asin': val = Math.asin(val); if(angleMode==="DEG") val *= (180/Math.PI); break;
+            case 'acos': val = Math.acos(val); if(angleMode==="DEG") val *= (180/Math.PI); break;
+            case 'atan': val = Math.atan(val); if(angleMode==="DEG") val *= (180/Math.PI); break;
+            case 'sec': val = 1 / Math.cos(rad); break;
+            case 'csc': val = 1 / Math.sin(rad); break;
+            case 'cot': val = 1 / Math.tan(rad); break;
+            case 'asec': val = Math.acos(1/val); if(angleMode==="DEG") val *= (180/Math.PI); break;
+            case 'acsc': val = Math.asin(1/val); if(angleMode==="DEG") val *= (180/Math.PI); break;
+            case 'acot': val = Math.atan(1/val); if(angleMode==="DEG") val *= (180/Math.PI); break;
+            case 'sqrt': val = Math.sqrt(val); break;
+            case 'square': val = Math.pow(val, 2); break;
+            case 'log': val = Math.log(val); break;
+            case 'log10': val = Math.log10(val); break;
+            case 'pi': val = Math.PI; break;
+            case 'e': val = Math.E; break;
+            case 'percent': val = val / 100; break;
+            case 'inv': val = 1 / val; break;
+            case 'negate': val = -val; break;
+        }
+        currentInput = (baseMode === "DEC") ? (Math.round(val * 10000000) / 10000000).toString() : Math.floor(val).toString(baseValues[baseMode]).toUpperCase();
+        updateDisplay();
+    }
+</script>
+</body>
+</html>
