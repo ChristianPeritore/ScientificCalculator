@@ -74,3 +74,5 @@ Both versions use a **Command-First** logic. Type the command, hit Enter, then p
 * **Precision** — Results are calculated with high precision and displayed with **6 decimal places**.
 * **Language Choice** — Use the **C++ version** for maximum execution speed or the **Python version** for easier code readability and cross-platform portability.
 * **Safety** — Includes built-in protection against "Division by Zero" and invalid mathematical inputs.
+Example
+<img width="1037" height="598" alt="image" src="https://github.com/user-attachments/assets/a28ff615-3c7a-4ecc-9d9c-8d07589276b6" />
